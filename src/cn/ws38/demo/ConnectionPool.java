@@ -4,26 +4,27 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * 连接数据库工具
- *
- * @author Administrator
+ * Get the connection from writing DB
  */
-public class DBUtils {
+public class ConnectionPool {
 
-    //连接池
-    private static BasicDataSource dataSource;
+    private static BasicDataSource dataSource = null;
 
-    static {
+    public static void init() {
+
+        if (dataSource != null) return;
 
         try {
             Properties p = new Properties();
 
             p.setProperty("driverClassName", "com.mysql.jdbc.Driver");
-            p.setProperty("url", "jdbc:MySQL://localhost:3306/mysql");
+            p.setProperty("url", "jdbc:MySQL://localhost:3306/demo");
             p.setProperty("username", "root");
             p.setProperty("password", "801129");
             p.setProperty("maxActive", "10");
@@ -35,32 +36,26 @@ public class DBUtils {
             p.setProperty("logAbandoned", "true");
 
             dataSource = BasicDataSourceFactory.createDataSource(p);
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * 得到Conneection连接
-     */
-    public static Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
 
-    /**
-     * 归还Connection
-     *
-     * @param connection 需要关闭的Connection
-     */
-    public static void closeConnection(Connection connection) {
+    public static synchronized Connection getConnection() throws SQLException {
 
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        if (dataSource == null) {
+            init();
         }
+
+        Connection connection = null;
+
+        if (dataSource != null) {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+        }
+
+        return connection;
     }
 }

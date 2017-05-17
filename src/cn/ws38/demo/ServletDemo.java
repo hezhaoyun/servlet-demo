@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 
 /**
  * Created by hezhaoyun
- * 2017/5/16.
+ * Create Data - 2017/5/16.
  */
 public class ServletDemo extends javax.servlet.http.HttpServlet {
 
@@ -20,8 +20,13 @@ public class ServletDemo extends javax.servlet.http.HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        InsertQueryDao insertQueryDao = new InsertQueryDao();
+
+        insertQueryDao.save();
+        String result = insertQueryDao.query();
+
         PrintWriter writer = response.getWriter();
-        writer.println("Hello, Servlet!");
+        writer.println(result);
         writer.flush();
     }
 }
