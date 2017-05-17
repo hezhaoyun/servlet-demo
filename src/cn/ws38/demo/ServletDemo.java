@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 /**
  * Created by hezhaoyun
  * Create Data - 2017/5/16.
- * All right reserved!
+ * All Right Reserved!
  */
 public class ServletDemo extends javax.servlet.http.HttpServlet {
 
